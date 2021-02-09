@@ -1,0 +1,25 @@
+.Header{
+    padding: 15px 30px;
+    background: #F6F7F9;
+    color: rgb(75, 71, 71);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.logo{
+    font-weight: 900;
+    text-transform: uppercase;
+    font-style: italic;
+}
+.Header a{
+    color: rgb(60, 143, 170);
+    text-decoration: none;
+    margin: 0 20px;
+}
+.Header a:hover{
+    color: gold
+}
+.active{
+    color: goldenrod;
+    font-weight: 700;
+}
