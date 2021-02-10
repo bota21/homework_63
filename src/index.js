@@ -4,12 +4,15 @@ import './index.css';
 import Page from './container/Page';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
+import axios from 'axios';
+
+axios.defaults.baseURL = 'https://js-react-node-default-rtdb.firebaseio.com/layout';
 
 ReactDOM.render(
   <BrowserRouter>
-   {/* <React.StrictMode> */}
-    <Page />
-  {/* </React.StrictMode> */}
+    <React.StrictMode>
+      <Page />
+    </React.StrictMode>
   </BrowserRouter>,
   document.getElementById('root')
 );

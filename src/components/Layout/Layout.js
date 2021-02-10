@@ -1,4 +1,4 @@
-import './Layout.css';
+// import './Layout.css';
 import Header from '../Header/Header';
 
 const Layout = props => {
