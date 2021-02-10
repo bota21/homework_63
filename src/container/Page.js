@@ -1,4 +1,3 @@
-import './Page.css';
 import { useEffect, useState } from 'react';
 import Layout from '../components/Layout/Layout';
 import { Route, Switch } from 'react-router-dom';
@@ -17,6 +16,10 @@ const Page = () => {
   const [aboutData, setAboutData] = useState([]);
   const [contactsData, setContactsData] = useState([]);
   const [divisionsData, setDivisionsData] = useState([]);
+  const [adminValue, setAdminValue] = useState([
+    { input: '', textarea: '' }
+  ]);
+  const [select, setSelected] = useState({ value: 'about' })
 
   let multiFunction = (url, arr) => {
     let fetchData = async () => {
@@ -30,30 +33,69 @@ const Page = () => {
   }
   useEffect(() => {
     multiFunction('home.json', setHomeData)
-  }, [loading]);
+  }, [homeData]);
 
   useEffect(() => {
     multiFunction('about.json', setAboutData)
-  }, [loading]);
+  }, [aboutData]);
 
   useEffect(() => {
     multiFunction('contacts.json', setContactsData)
-  }, [loading]);
+  }, [contactsData]);
 
   useEffect(() => {
     multiFunction('divisions.json', setDivisionsData)
-  }, [loading]);
+  }, [divisionsData]);
+
+  let changeAdminValue = (e) => {
+    let name = e.target.name;
+    let value = e.target.value;
+    setAdminValue({ ...adminValue, [name]: value })
+  }
+
+  let submitFormAdmin = (e) => {
+    e.preventDefault();
+    setLoading(true);
+    let fetchData = async () => {
+      try {
+        let changeValue = { title: adminValue.input, content: adminValue.textarea };
+        let response = await axios.put(select.value + '.json', changeValue);
+        setAdminValue({ input: '', textarea: '' })
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    fetchData().finally(() => setLoading(false))
+  }
+  let changeSelect = (e) => {
+    setSelected({ value: e.target.value })
+  }
 
   return (
     <div className="Page">
       <Layout>
         {loading ? <Spinner /> : null}
         <Switch>
-          <Route path='/pages' exact render={() => <Home array={homeData} />} />
+          <Route path='/pages/home' exact render={() => <Home array={homeData} />} />
           <Route path='/pages/about' render={() => <About array={aboutData} />} />
           <Route path='/pages/contacts' render={() => <Contacts array={contactsData} />} />
           <Route path='/pages/divisions' render={() => <Divisions array={divisionsData} />} />
-          <Route path='/pages/admin' component={Admin} />
+          <Route path='/pages/admin' render={() => {
+            return <Admin
+              change={changeAdminValue}
+              submit={submitFormAdmin}
+              input='input'
+              textarea='textarea'
+              inputvalue={adminValue.input}
+              textareaValue={adminValue.textarea}
+              changeSelect={changeSelect}
+              selectValue={select.value}
+              homeValue='home'
+              aboutValue='about'
+              contactsValue='contacts'
+              DivisionsValue='divisions'
+            />
+          }} />
           <Route component={NotFound} />
         </Switch>
       </Layout>

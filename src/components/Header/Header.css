@@ -20,6 +20,6 @@
     color: gold
 }
 .active{
-    color: goldenrod;
     font-weight: 700;
+    color: #fff;
 }

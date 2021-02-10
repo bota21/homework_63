@@ -1,0 +1,29 @@
+.Admin{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px;
+}
+.form_wrapper{
+display: flex;
+flex-direction: column;
+margin: 10px 0 15px;
+}
+.form_wrapper select{
+    width: 90px;
+    padding: 8px;
+    margin-top: 8px;
+}
+.form_wrapper input{
+    width: 300px;
+    padding: 8px;
+    margin-top: 5px;
+}
+.form_wrapper textarea{
+    width: 300px;
+    padding: 8px;
+    margin-top: 5px;
+}
+.Admin button{
+    padding: 10px 30px;
+}
