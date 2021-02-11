@@ -21,31 +21,30 @@ const Page = () => {
   ]);
   const [select, setSelected] = useState({ value: 'about' })
 
-  let multiFunction = (url, arr) => {
+  useEffect(() => {
     let fetchData = async () => {
-      let response = await axios.get(url);
-      let fetchedData = Object.keys(response.data).map(id => {
-        return { ...response.data, id }
-      })
-      arr(fetchedData)
-    }
-    fetchData().finally(() => setLoading(false))
-  }
-  useEffect(() => {
-    multiFunction('home.json', setHomeData)
-  }, [homeData]);
-
-  useEffect(() => {
-    multiFunction('about.json', setAboutData)
-  }, [aboutData]);
-
-  useEffect(() => {
-    multiFunction('contacts.json', setContactsData)
-  }, [contactsData]);
-
-  useEffect(() => {
-    multiFunction('divisions.json', setDivisionsData)
-  }, [divisionsData]);
+      try {
+        let responseHome = await axios.get("home.json");
+      let responseAbout = await axios.get("about.json");
+      let responseContacts = await axios.get("contacts.json");
+      let responseDivisions = await axios.get("divisions.json");
+      Promise.all([
+        responseAbout,
+        responseHome,
+        responseContacts,
+        responseDivisions,
+      ]).then(function (results) {
+        setHomeData(results[1].data);
+        setAboutData(results[0].data);
+        setContactsData(results[2].data);
+        setDivisionsData(results[3].data);
+      });
+      } catch (e) {
+        throw new console.error(e);
+      }      
+    };
+    fetchData().finally(() => setLoading(false));
+  }, [loading]);
 
   let changeAdminValue = (e) => {
     let name = e.target.name;
@@ -59,14 +58,16 @@ const Page = () => {
     let fetchData = async () => {
       try {
         let changeValue = { title: adminValue.input, content: adminValue.textarea };
-        let response = await axios.put(select.value + '.json', changeValue);
-        setAdminValue({ input: '', textarea: '' })
+        await axios.put(select.value + '.json', changeValue);
+        setAdminValue({ input: '', textarea: '' });
+        window.location.href='/pages/'+select.value;
       } catch (e) {
         console.error(e);
       }
     }
     fetchData().finally(() => setLoading(false))
   }
+
   let changeSelect = (e) => {
     setSelected({ value: e.target.value })
   }
@@ -76,10 +77,21 @@ const Page = () => {
       <Layout>
         {loading ? <Spinner /> : null}
         <Switch>
-          <Route path='/pages/home' exact render={() => <Home array={homeData} />} />
-          <Route path='/pages/about' render={() => <About array={aboutData} />} />
-          <Route path='/pages/contacts' render={() => <Contacts array={contactsData} />} />
-          <Route path='/pages/divisions' render={() => <Divisions array={divisionsData} />} />
+        <Route path='/' exact component={Home}/>
+          <Route path='/pages' exact component={Home}/>
+          <Route path='/pages/home' render={() => <Home
+           title={homeData.title} content={homeData.content}
+          />} />
+          <Route path='/pages/about' render={() => <About
+             title={aboutData.title} content={aboutData.content}
+          />} />
+          <Route path='/pages/contacts' render={() => <Contacts
+             title={contactsData.title} content={contactsData.content}
+          />} />
+          <Route path='/pages/divisions' render={() => <Divisions
+             title={divisionsData.title} content={divisionsData.content}
+          />} />
+         
           <Route path='/pages/admin' render={() => {
             return <Admin
               change={changeAdminValue}
